@@ -1,0 +1,42 @@
+# @title Implementação Prática: Questões 9 e 10
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from imblearn.over_sampling import SMOTE
+
+# 1. Simulação do Dataset (Estudo de Caso - Questão 10)
+data = {
+    'idade': [25, 45, np.nan, 35, 50, 23, 40, 22, 29, 31],
+    'renda_mensal': [2500, 8000, 4500, 3200, 12000, 2100, 5000, 1800, 3000, 28000],
+    'estado_civil': ['Solteiro', 'Casado', 'Solteiro', 'Divorciado', 'Casado', 'Solteiro', 'Casado', 'Solteiro', 'Divorciado', 'Casado'],
+    'aprovado': [0, 0, 0, 0, 0, 0, 0, 0, 1, 1] # Classe desbalanceada
+}
+df = pd.DataFrame(data)
+
+# --- PIPELINE DE PRÉ-PROCESSAMENTO (Questão 9) ---
+
+# A. Limpeza: Tratando valores ausentes na Idade com a Mediana
+df['idade'] = df['idade'].fillna(df['idade'].median())
+
+# B. Transformação: One-Hot Encoding para Estado Civil
+df = pd.get_dummies(df, columns=['estado_civil'], prefix='civil')
+
+# C. Normalização: Colocando Renda e Idade na mesma escala (Min-Max)
+scaler = MinMaxScaler()
+df[['idade', 'renda_mensal']] = scaler.fit_transform(df[['idade', 'renda_mensal']])
+
+# D. Divisão: Treino e Teste (Questão 5)
+X = df.drop('aprovado', axis=1)
+y = df['aprovado']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# E. Amostragem: Balanceamento com SMOTE (Questão 6)
+# Nota: k_neighbors=1 apenas para o exemplo funcionar com poucos dados
+sm = SMOTE(random_state=42, k_neighbors=1)
+X_res, y_res = sm.fit_resample(X_train, y_train)
+
+print("--- Dados Processados e Balanceados ---")
+print(X_res.head())
+print("\nDistribuição da classe 'aprovado' após SMOTE:")
+print(y_res.value_counts())
