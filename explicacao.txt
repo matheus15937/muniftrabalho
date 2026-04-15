@@ -1,0 +1,14 @@
+No arquivo modelos.py basicamente importamos a base da gripe, e fizemos alguns tratamentos básicos como : 
+- mudamos o nome das colunas para facilitar o nosso entendimento
+- removemos a coluna data/hora do registro
+- definimos a coluna target (got_flu) e transformamos todos as colunas para categóricas
+
+Após isso definimos um split de 80% treino e 20% teste.
+
+Verificamos a distribuição de classes (58-42(%)) e tentamos fazer um balanceamento mas não melhorou a acurácia.
+
+Então começamos os modelos : 
+1. o KNN com K=5, tivemos acc=56% 
+2. Naive Bayes tivemos acc=64%
+3. Árvore de descisão foi o melhor modelo com uma acc=70%, onde a feature mais polarizadora foi traveled quando era "Poucas vezes ao ano", e a melhor max_depth aqui foi 5.
+4. O PRISM tivemos uma acc=64% onde a feature mais importante foi "stress"
